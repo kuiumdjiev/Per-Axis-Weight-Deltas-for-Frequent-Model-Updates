@@ -1,0 +1,9 @@
+torch
+transformers
+datasets
+safetensors
+accelerate
+tqdm
+pyyaml
+lm-eval
+bitdelta @ git+https://github.com/Lightning-AI/bitdelta.git

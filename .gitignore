@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.venv/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Outputs
+outputs*/
+results*/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# HF cache (optional)
+# ~/.cache/huggingface/

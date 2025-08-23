@@ -1,0 +1,25 @@
+base_model: "meta-llama/Llama-2-7b-hf"
+finetuned_model: "meta-llama/Llama-2-7b-chat-hf"
+
+base_model_device: "auto"
+finetuned_model_device: "cuda:0"
+finetuned_compressed_model_device: "cuda:1"
+
+split_memory_map:
+  1: "24GiB"
+  0: "20GiB"
+base_model_memory_map: null
+finetuned_model_memory_map: null
+finetuned_compressed_model_memory_map: null
+
+dataset_name: "c4"
+subset: "en"
+max_length: 128
+batch_size: 1
+num_steps: 800
+lr: 0.0005
+
+save_dir: "outputs_llama2_vicuna_c4"
+debug: true
+num_groups: 1
+save_full_model: false
