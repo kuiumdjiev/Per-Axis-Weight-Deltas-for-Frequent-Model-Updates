@@ -28,6 +28,16 @@ A complete pipeline for compressing, selecting, and evaluating Large Language Mo
 
 ## Installation & setup
 
+### 1) Clone and prepare environment
+```powershell
+git clone https://anonymous.4open.science/r/Per-Axis-Weight-Deltas-for-Frequent-Model-Updates-0F1C.git
+cd <your-repo>
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -U pip
+pip install -r requirements.txt
+pip install -e .
+```
 
 ### 2) HuggingFace login (if needed)
 ```powershell
@@ -66,7 +76,6 @@ lr: 0.0005
 save_dir: "outputs_llama2_vicuna_c4"
 debug: true
 ```
-
 
 ## Requirements
 - Python 3.10+
