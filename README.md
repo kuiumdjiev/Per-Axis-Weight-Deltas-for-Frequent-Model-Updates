@@ -26,58 +26,83 @@ A complete pipeline for compressing, selecting, and evaluating Large Language Mo
 └── .gitignore
 ```
 
-## Installation & setup
+# Efficient Model Compression & Evaluation (1-bit Delta with Vector Scales)
 
-### 1) Clone and prepare environment
+Serving many task-specialized LLM variants is often limited by the large size of fine-tuned checkpoints and the resulting cold-start latency. Since fine-tuned weights differ from their base model by relatively small structured residuals, a natural approach is to represent them as compressed deltas. We propose a simple 1-bit delta scheme that stores only the sign of the weight difference together with lightweight per-axis (row/column) FP16 scaling factors, learned from a small calibration set. This design preserves the compactness of 1-bit deltas while more accurately capturing variation across weight dimensions, leading to improved reconstruction quality over scalar alternatives. From a systems perspective, a streamlined loader that transfers packed deltas in a single operation per module reduces cold-start latency and storage overhead, with artifacts several times smaller than a full FP16 checkpoint.
+
+## Results (Zero-shot Accuracy, %)
+
+After calibrating on 150 samples from C4. Vector scales are trained for five epochs with learning rate 1e-5; BitDelta uses the same setup with a single scalar per matrix.
+
+| Model              | ARC-C  | ARC-E  | HellaSwag | PIQA   | Winogrande | Avg   |
+|--------------------|--------|--------|-----------|--------|------------|-------|
+| Baseline           | 51.70  | 81.81  | 59.06     | 79.86  | 73.87      | 69.26 |
+| BitDelta (scalar)  | 52.55  | 82.32  | 59.73     | 81.22  | 73.95      | 69.95 |
+| Vector (row/col)   | 53.58  | 82.99  | 59.78     | 80.63  | 74.19      | 70.23 |
+
+## Project Structure
+
+- `src/bitdelta_pipeline/` — core library modules
+	- `args.py` — configuration dataclass
+	- `models.py` — tokenizer/model loading helpers
+	- `data.py` — dataset and dataloader builders (C4 subsets)
+	- `binary_variants.py` — BinaryDiffRow/Col modules and autograd helpers
+	- `io_capture.py` — forward hooks to collect per-layer inputs/outputs
+	- `choose_compress.py` — per-layer row/col selection and fitting
+	- `compress.py` — baseline BitDelta compression by module
+	- `eval_utils.py` — logits caching and evaluation utilities
+	- `save_load_delta.py` — save/load/merge delta artifacts
+	- `weights.py` — load specific weights from local HF cache
+- `scripts/` — command-line entry points
+	- `run_pipeline.py` — end-to-end compression + training
+	- `run_choose_compress.py` — row/col selection per layer using calibration I/O
+- `configs/` — YAML configuration files
+	- `default.yaml` — default configuration
+- `tests/` — smoke tests
+- `requirements.txt`, `pyproject.toml`, `.gitignore`
+
+## Installation & Usage (Windows PowerShell)
+
 ```powershell
-git clone https://anonymous.4open.science/r/Per-Axis-Weight-Deltas-for-Frequent-Model-Updates-0F1C.git
-cd Per-Axis-Weight-Deltas-for-Frequent-Model-Updates-0F1C
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -U pip
 pip install -r requirements.txt
 pip install -e .
-```
 
-### 2) HuggingFace login
-```powershell
+# (Optional) Hugging Face login for gated models
 huggingface-cli login
 ```
 
-### 3) Configure
-Edit `configs/default.yaml` to match your models, devices, and parameters.
+Run the main pipeline:
+```powershell
+python -m scripts.run_pipeline --config configs/default.yaml
+```
 
-## Run
-### Automatic row/col selection per layer
+Run per-layer row/col selection:
 ```powershell
 python -m scripts.run_choose_compress --config configs/default.yaml
 ```
 
-## Example config (configs/default.yaml)
-```yaml
-base_model: "meta-llama/Llama-3.1-8B"
-finetuned_model: "meta-llama/Llama-3.1-8B-Instruct"
-base_model_device: "auto"
-finetuned_model_device: "cuda:0"
-finetuned_compressed_model_device: "cuda:0"
-split_memory_map:
-	1: "24GiB"
-	0: "20GiB"
-max_length: 128
-batch_size: 1
-num_steps: 800
-lr: 0.0005
-save_dir: "output"
-debug: true
-```
+## Attribution and Adaptation
 
-## Requirements
-- Python 3.10+
-- CUDA GPU (for acceleration)
-- Access to HuggingFace models (e.g., Llama)
-- See requirements.txt for all dependencies
+This repository is primarily adapted from the BitDelta project (FasterDecoding\
+BitDelta). We extended and reorganized components to:
+- Add vector (row/col) scaling variants alongside the scalar BitDelta baseline
+- Implement per-layer I/O capture and automatic row/col selection
+- Provide utilities to save/load/merge vector-delta artifacts
+- Offer a clean CLI, configuration, and modular pipeline
 
-## Notes & tips
-- Don’t commit large model weights to the repo—use HF Hub or release artifacts
-- If BitDelta isn’t installed, some features will be skipped with a warning
-- Consider adding a GitHub Actions workflow for tests/CI
+## Experiment-specific Files (this repo)
+
+- Vector delta modules and helpers:
+	- `src/bitdelta_pipeline/binary_variants.py`
+	- `src/bitdelta_pipeline/save_load_delta.py`
+- Per-layer I/O capture and chooser:
+	- `src/bitdelta_pipeline/io_capture.py`
+	- `src/bitdelta_pipeline/choose_compress.py`
+- End-to-end scripts:
+	- `scripts/run_pipeline.py`
+	- `scripts/run_choose_compress.py`
+- Notebook-derived utilities and weight loading:
+	- `src/bitdelta_pipeline/weights.py`
