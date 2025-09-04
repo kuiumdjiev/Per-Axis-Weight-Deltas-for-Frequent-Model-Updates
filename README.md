@@ -31,7 +31,7 @@ A complete pipeline for compressing, selecting, and evaluating Large Language Mo
 ### 1) Clone and prepare environment
 ```powershell
 git clone https://anonymous.4open.science/r/Per-Axis-Weight-Deltas-for-Frequent-Model-Updates-0F1C.git
-cd <your-repo>
+cd Per-Axis-Weight-Deltas-for-Frequent-Model-Updates-0F1C
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -U pip
@@ -39,7 +39,7 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-### 2) HuggingFace login (if needed)
+### 2) HuggingFace login
 ```powershell
 huggingface-cli login
 ```
@@ -48,12 +48,6 @@ huggingface-cli login
 Edit `configs/default.yaml` to match your models, devices, and parameters.
 
 ## Run
-
-### Main pipeline (BitDelta compression and training)
-```powershell
-python -m scripts.run_pipeline --config configs/default.yaml
-```
-
 ### Automatic row/col selection per layer
 ```powershell
 python -m scripts.run_choose_compress --config configs/default.yaml
@@ -73,7 +67,7 @@ max_length: 128
 batch_size: 1
 num_steps: 800
 lr: 0.0005
-save_dir: "outputs_llama2_vicuna_c4"
+save_dir: "output"
 debug: true
 ```
 
