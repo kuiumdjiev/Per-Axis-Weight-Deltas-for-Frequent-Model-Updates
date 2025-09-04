@@ -106,3 +106,31 @@ BitDelta). We extended and reorganized components to:
 	- `scripts/run_choose_compress.py`
 - Notebook-derived utilities and weight loading:
 	- `src/bitdelta_pipeline/weights.py`
+## Citation
+
+If you find this repository useful, please cite it and related work as appropriate.
+
+Repository:
+
+```bibtex
+@misc{peraxis_weight_deltas_2025,
+	title        = {Per-axis weight deltas for frequent model updates},
+	howpublished = {\url{https://anonymous.4open.science/r/Per-Axis-Weight-Deltas-for-Frequent-Model-Updates-0F1C}},
+	year         = {2025},
+	note         = {Code and experiments}
+}
+```
+
+BitDelta:
+
+```bibtex
+@misc{liu2024bitdeltafinetuneworthbit,
+      title={BitDelta: Your Fine-Tune May Only Be Worth One Bit}, 
+      author={James Liu and Guangxuan Xiao and Kai Li and Jason D. Lee and Song Han and Tri Dao and Tianle Cai},
+      year={2024},
+      eprint={2402.10193},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2402.10193}, 
+}
+```
