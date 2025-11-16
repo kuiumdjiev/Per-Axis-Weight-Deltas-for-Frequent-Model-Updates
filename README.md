@@ -34,11 +34,18 @@ Serving many task-specialized LLM variants is often limited by the large size of
 
 After calibrating on 150 samples from C4. Vector scales are trained for five epochs with learning rate 1e-5; BitDelta uses the same setup with a single scalar per matrix.
 
-| Model              | ARC-C  | ARC-E  | HellaSwag | PIQA   | Winogrande | Avg   |
-|--------------------|--------|--------|-----------|--------|------------|-------|
-| Baseline           | 51.70  | 81.81  | 59.06     | 79.86  | 73.87      | 69.26 |
-| BitDelta (scalar)  | 52.55  | 82.32  | 59.73     | 81.22  | 73.95      | 69.95 |
-| Vector (row/col)   | 53.58  | 82.99  | 59.78     | 80.63  | 74.19      | 70.23 |
+| Model | Method | ARC-C | ARC-E | HellaSwag | PIQA | Winogrande | Avg |
+|-------|--------|-------|-------|-----------|------|------------|------|
+| **Llama-3.1-8B-Instruct**<br/><sub>(Base: Llama-3.1-8B)</sub> | Baseline | 51.70 | 81.81 | 59.06 | 79.86 | 73.87 | 69.26 |
+| | BitDelta (scalar) | 52.55 | 82.32 | 59.73 | **81.22** | 73.95 | 69.95 |
+| | **Vector (row/col)** | **53.58** | **82.99** | **59.78** | 80.63 | **74.19** | **70.23** |
+| **Qwen3-14B**<br/><sub>(Base: Qwen3-14B-Base)</sub> | Baseline | 58.87 | 84.09 | 60.89 | 80.09 | 72.77 | 71.34 |
+| | BitDelta (scalar) | **58.70** | 84.13 | 59.88 | 79.38 | **73.16** | 71.05 |
+| | **Vector (row/col)** | **58.70** | **84.34** | **62.07** | **80.52** | 72.93 | **71.71** |
+| **Phi-4-reasoning**<br/><sub>(Base: Phi-4)</sub> | Baseline | 55.72 | 83.29 | 59.01 | 80.63 | 75.61 | 70.74 |
+| | BitDelta (scalar) | 55.46 | **83.54** | **59.49** | 80.74 | 76.09 | **71.06** |
+| | **Vector (row/col)** | **55.63** | 82.95 | 59.35 | **80.85** | **76.24** | 71.00 |
+
 
 ## Project Structure
 
