@@ -58,7 +58,6 @@ def compress_submodule_choose(base_model_id: str, finetuned_model, finetuned_com
     # Place col temporarily and evaluate end loss
     parent = finetuned_compressed_model.get_submodule(name)
     setattr(parent, subname, col)
-    col_end = evaluate_model_end_loss(finetuned_compressed_model, val_dataloader, Yval, device=comp_device, max_val_batches=len(Yval)) if False else col_loss
 
     # Train row
     row = BinaryDiffRow(base_w, finetune=ft_w, n_bits=32).to(target_device)

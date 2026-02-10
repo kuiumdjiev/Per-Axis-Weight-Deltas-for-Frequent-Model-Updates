@@ -103,5 +103,4 @@ def merge_compression_delta_into_weights(base_model: nn.Module, path: str, devic
         if name in diff:
             p.data.copy_(diff[name].to(p.device))
 
-    print('✅ Deltas merged into weights.')
     del diff; gc.collect(); torch.cuda.empty_cache()

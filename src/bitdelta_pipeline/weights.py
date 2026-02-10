@@ -18,12 +18,12 @@ def load_weight_from_cache(model_name: str, weight_name: str):
     cache_dir = os.path.expanduser("~/.cache/huggingface/hub")
     subdirs = [d for d in os.listdir(cache_dir) if model_name.replace("/", "--") in d]
     if not subdirs:
-        raise FileNotFoundError(f"Модел '{model_name}' не е намерен в кеша.")
+        raise FileNotFoundError(f"Model '{model_name}' not found in cache.")
 
     model_dir = os.path.join(cache_dir, subdirs[0], "snapshots")
     snapshot_dirs = os.listdir(model_dir)
     if not snapshot_dirs:
-        raise FileNotFoundError(f"Няма snapshot за модела '{model_name}'.")
+        raise FileNotFoundError(f"No snapshot found for model '{model_name}'.")
 
     snapshot_path = os.path.join(model_dir, snapshot_dirs[0])
 
@@ -33,17 +33,17 @@ def load_weight_from_cache(model_name: str, weight_name: str):
 
     weights_file = os.path.join(snapshot_path, index['weight_map'][weight_name])
     if weights_file is None:
-        raise FileNotFoundError(f"Не са намерени тегла за модела '{model_name}'.")
+        raise FileNotFoundError(f"No weights found for model '{model_name}'.")
 
     if weights_file.endswith(".safetensors"):
         with safe_open(weights_file, framework="pt", device="cpu") as f:
             if weight_name not in f.keys():
-                raise KeyError(f"Теглото '{weight_name}' не е намерено.")
+                raise KeyError(f"Weight '{weight_name}' not found.")
             tensor = f.get_tensor(weight_name)
     else:
         state_dict = torch.load(weights_file, map_location="cpu")
         if weight_name not in state_dict:
-            raise KeyError(f"Теглото '{weight_name}' не е намерено.")
+            raise KeyError(f"Weight '{weight_name}' not found.")
         tensor = state_dict[weight_name]
         del state_dict
 

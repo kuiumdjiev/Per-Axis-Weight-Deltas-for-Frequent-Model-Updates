@@ -6,7 +6,7 @@ A complete pipeline for compressing, selecting, and evaluating Large Language Mo
 ## Features
 - Load HuggingFace models and tokenizers
 - Cache reference logits from a finetuned model
-- Compress with BinaryDiffRow/Col
+- Compress using vectors and binary masks
 - Automatically choose row/col per layer based on validation loss
 - Train the compressed model to match finetuned logits
 - Save/load/merge delta files
@@ -19,9 +19,7 @@ A complete pipeline for compressing, selecting, and evaluating Large Language Mo
 ├── src/bitdelta_pipeline/   # Library (modules: args, models, data, binary_variants, io_capture, choose_compress, ...)
 ├── scripts/                 # CLI scripts for pipeline and choose-compress
 ├── configs/                 # YAML configurations
-├── tests/                   # Tests
 ├── requirements.txt         # Dependencies
-├── pyproject.toml           # Packaging
 ├── README.md                # This file
 └── .gitignore
 ```
@@ -65,8 +63,7 @@ After calibrating on 150 samples from C4. Vector scales are trained for five epo
 	- `run_choose_compress.py` — row/col selection per layer using calibration I/O
 - `configs/` — YAML configuration files
 	- `default.yaml` — default configuration
-- `tests/` — smoke tests
-- `requirements.txt`, `pyproject.toml`, `.gitignore`
+- `requirements.txt`, `.gitignore`
 
 ## Installation & Usage (Windows PowerShell)
 
@@ -93,8 +90,7 @@ python -m scripts.run_choose_compress --config configs/default.yaml
 
 ## Attribution and Adaptation
 
-This repository is primarily adapted from the BitDelta project (FasterDecoding\
-BitDelta). We extended and reorganized components to:
+Our repository extended BitDelta to:
 - Add vector (row/col) scaling variants alongside the scalar BitDelta baseline
 - Implement per-layer I/O capture and automatic row/col selection
 - Provide utilities to save/load/merge vector-delta artifacts

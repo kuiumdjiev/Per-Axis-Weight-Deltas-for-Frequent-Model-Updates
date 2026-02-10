@@ -19,7 +19,7 @@ batch_size: 1
 num_steps: 800
 lr: 0.0005
 
-save_dir: "outputs_llama2_vicuna_c4"
+save_dir: "outputs_llama2"
 debug: true
 num_groups: 1
 save_full_model: false
